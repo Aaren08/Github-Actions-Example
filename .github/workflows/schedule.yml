@@ -1,6 +1,9 @@
+name: Scheduled Job
+
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: "*/5 * * * *"
 
 jobs:
   hello_world:

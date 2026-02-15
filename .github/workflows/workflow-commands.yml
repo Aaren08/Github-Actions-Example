@@ -1,12 +1,66 @@
-name: "workflow commands"
+name: "Workflow Commands Demo"
 
-on: [push]
+on:
+  push:
+
 jobs:
   workflow-commands:
     runs-on: ubuntu-latest
+
     steps:
-      - name: "Run workflow commands"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set Environment Variables
+      - name: Set Environment Variables
+        id: set-env
         run: |
-          echo "::notice title=Workflow Commands::This is a notice from the workflow commands step."
-          echo "This is a message from the workflow commands step."
-          echo "You can use this step to run any commands you need for your workflow."
+          echo "APP_NAME=MyApp" >> $GITHUB_ENV
+          echo "VERSION=1.0.0" >> $GITHUB_ENV
+
+      # Add Custom Directory to PATH
+      - name: Add to PATH
+        run: |
+          mkdir my-bin
+          echo "echo Hello from custom binary!" > my-bin/hello.sh
+          chmod +x my-bin/hello.sh
+          echo "$(pwd)/my-bin" >> $GITHUB_PATH
+
+      # Mask a Secret Value
+      - name: Mask Secret
+        run: |
+          SECRET_VALUE="super-secret-token-123"
+          echo "::add-mask::$SECRET_VALUE"
+          echo "This will be masked: $SECRET_VALUE"
+
+      # Debugging + Logging Commands
+      - name: Logging Commands
+        run: |
+          echo "::debug::This is a debug message"
+          echo "::notice title=Notice Title::This is a notice message"
+          echo "::warning title=Warning Title::This is a warning message"
+
+      # Set Output Parameter
+      - name: Set Output
+        id: output-step
+        run: |
+          echo "build_status=success" >> $GITHUB_OUTPUT
+
+      # Use Output in Another Step
+      - name: Use Output
+        run: |
+          echo "Build status was: ${{ steps.output-step.outputs.build_status }}"
+
+      # Group Logs
+      - name: Group Logs
+        run: |
+          echo "::group::Grouped Logs"
+          echo "This log is grouped"
+          echo "Another grouped message"
+          echo "::endgroup::"
+
+      # Stop and Fail Workflow Intentionally
+      - name: Fail the Job
+        run: |
+          echo "::error title=Failure::Something went wrong!"
+          exit 1

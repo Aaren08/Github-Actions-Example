@@ -1,0 +1,12 @@
+name: "workflow commands"
+
+on: [push]
+jobs:
+  workflow-commands:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Run workflow commands"
+        run: |
+          echo "::notice title=Workflow Commands::This is a notice from the workflow commands step."
+          echo "This is a message from the workflow commands step."
+          echo "You can use this step to run any commands you need for your workflow."
